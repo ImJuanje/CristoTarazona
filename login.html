@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Plataforma de Ensayo · Banda CC y TT Cristo de Tarazona</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --gold: #c9a84c;
+      --gold-light: #e8c97a;
+      --gold-pale: #f5e6b8;
+      --dark: #0d0b08;
+      --dark-mid: #1a1610;
+      --dark-card: #201c14;
+      --dark-border: #2e2616;
+      --red-deep: #7a1c1c;
+      --cream: #f0e8d0;
+      --text-body: #d4c9a8;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      height: 100%;
+    }
+
+    body {
+      background-color: var(--dark);
+      color: var(--text-body);
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.7;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow-x: hidden;
+      padding: 2rem;
+    }
+
+    /* noise texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.35;
+    }
+
+    /* fondo con detalles dorados */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(122, 28, 28, 0.12) 0%, transparent 60%),
+                  radial-gradient(ellipse 60% 80% at 20% 80%, rgba(201, 168, 76, 0.06) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* contenedor principal del login */
+    .login-container {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      animation: fadeUp 0.9s ease both;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* tarjeta elegante */
+    .login-card {
+      background: rgba(26, 22, 16, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(201, 168, 76, 0.3);
+      border-radius: 24px;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(201, 168, 76, 0.1) inset;
+      transition: all 0.3s ease;
+    }
+
+    .login-card:hover {
+      border-color: rgba(201, 168, 76, 0.6);
+      box-shadow: 0 30px 50px rgba(0, 0, 0, 0.6);
+    }
+
+    /* header con ornamentos */
+    .login-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .login-ornament {
+      font-size: 2rem;
+      color: var(--gold);
+      display: block;
+      margin-bottom: 0.75rem;
+      letter-spacing: 8px;
+    }
+
+    .login-header h1 {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(1.6rem, 6vw, 2.2rem);
+      color: var(--cream);
+      letter-spacing: 0.02em;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+    }
+
+    .login-header h2 {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(0.75rem, 3vw, 0.9rem);
+      color: var(--gold-light);
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      font-weight: 400;
+      background: rgba(201, 168, 76, 0.1);
+      display: inline-block;
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+      margin-top: 0.5rem;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      justify-content: center;
+      margin: 1rem 0 0.5rem;
+    }
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      max-width: 70px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .divider span {
+      color: var(--gold);
+      font-size: 0.8rem;
+    }
+
+    /* formulario */
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      margin: 2rem 0 1.8rem;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .input-group label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-left: 0.2rem;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 14px;
+      color: var(--gold);
+      font-size: 1rem;
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .input-field {
+      width: 100%;
+      background: var(--dark-card);
+      border: 1px solid var(--dark-border);
+      padding: 14px 16px 14px 42px;
+      color: var(--cream);
+      font-family: 'EB Garamond', serif;
+      font-size: 1rem;
+      border-radius: 14px;
+      transition: all 0.25s ease;
+      outline: none;
+    }
+
+    .input-field:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px rgba(201, 168, 76, 0.2);
+      background: var(--dark);
+    }
+
+    .input-field::placeholder {
+      color: rgba(212, 201, 168, 0.4);
+      font-style: italic;
+      font-size: 0.9rem;
+    }
+
+    /* botón principal */
+    .btn-login {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      background: var(--gold);
+      color: var(--dark);
+      border: none;
+      padding: 14px 20px;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 0.5rem;
+      position: relative;
+      overflow: hidden;
+      font-weight: 600;
+    }
+
+    .btn-login::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--gold-light);
+      transform: translateX(-100%);
+      transition: transform 0.35s ease;
+    }
+
+    .btn-login span {
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn-login:hover::before {
+      transform: translateX(0);
+    }
+
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(201, 168, 76, 0.25);
+    }
+
+    /* enlace ayuda */
+    .help-link {
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .help-link a {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--text-body);
+      text-decoration: none;
+      border-bottom: 1px dashed rgba(201, 168, 76, 0.4);
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .help-link a:hover {
+      color: var(--gold);
+      border-bottom-color: var(--gold);
+    }
+
+    /* pie decorativo */
+    .login-footer {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.7rem;
+      color: rgba(212, 201, 168, 0.4);
+      border-top: 1px solid rgba(201, 168, 76, 0.15);
+      padding-top: 1.5rem;
+    }
+
+    .login-footer p {
+      margin-bottom: 0.3rem;
+    }
+
+    .volver-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--gold-light);
+      text-decoration: none;
+      font-family: 'Cinzel', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      margin-top: 0.3rem;
+    }
+
+    .volver-link:hover {
+      color: var(--gold);
+    }
+
+    /* mensaje de error simulado (feedback) */
+    .error-message {
+      background: rgba(122, 28, 28, 0.2);
+      border-left: 3px solid #b33;
+      padding: 0.6rem 1rem;
+      font-size: 0.8rem;
+      color: #e0aa8a;
+      border-radius: 12px;
+      margin-top: -0.5rem;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+      animation: fadeQuick 0.3s ease;
+    }
+
+    @keyframes fadeQuick {
+      from { opacity: 0; transform: translateY(-5px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+
+    /* responsividad */
+    @media (max-width: 600px) {
+      body {
+        padding: 1rem;
+        align-items: center;
+      }
+      .login-card {
+        padding: 1.8rem 1.2rem;
+      }
+      .input-field {
+        padding: 12px 12px 12px 38px;
+        font-size: 0.9rem;
+      }
+      .btn-login {
+        padding: 12px 16px;
+      }
+      .login-header h1 {
+        font-size: 1.7rem;
+      }
+    }
+
+    @media (max-width: 450px) {
+      .login-card {
+        padding: 1.5rem 1rem;
+      }
+      .input-icon {
+        left: 10px;
+        font-size: 0.9rem;
+      }
+      .input-field {
+        padding-left: 34px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="login-container">
+  <div class="login-card">
+    
+    <div class="login-header">
+      <span class="login-ornament">✝</span>
+      <h1>Plataforma de ensayo</h1>
+      <div class="divider">
+        <span>✦</span>
+      </div>
+      <h2>Banda de CC y TT Cristo de Tarazona</h2>
+    </div>
+
+    <form class="login-form" id="loginForm" action="#" method="post">
+      <div class="input-group">
+        <label>Nombre / Usuario</label>
+        <div class="input-wrapper">
+          <span class="input-icon">👤</span>
+          <input type="text" class="input-field" id="username" placeholder="Tu nombre o usuario" required autocomplete="username" />
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Contraseña</label>
+        <div class="input-wrapper">
+          <span class="input-icon">🔒</span>
+          <input type="password" class="input-field" id="password" placeholder="••••••••" required autocomplete="current-password" />
+        </div>
+      </div>
+
+      <div class="error-message" id="errorMsg">
+        ⚠️ Credenciales incorrectas. Prueba con cualquier usuario/contraseña (demo).
+      </div>
+
+      <button type="submit" class="btn-login"><span>Iniciar Sesión</span></button>
+    </form>
+
+    <div class="help-link">
+      <a href="#contacto" id="problemasLink">
+        <span>❓</span> ¿Tienes problemas para iniciar sesión?
+      </a>
+    </div>
+
+    <div class="login-footer">
+      <p>🎺 Ensayos · Partituras · Calendario cofrade</p>
+      <a href="index.html" class="volver-link">← Volver a la web principal</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  (function() {
+    const form = document.getElementById('loginForm');
+    const errorDiv = document.getElementById('errorMsg');
+    
+    // Pequeña demo interactiva: si el usuario pulsa enviar, mostramos mensaje de "simulación"
+    // y redirigimos (a modo de experiencia) a la misma página o dashboard simbólico
+    // pero respetando la esencia: para mantener la coherencia, puedes hacer un alert o redirigir.
+    // Como no hay backend, se muestra un mensaje de éxito simulado y se puede redirigir a un panel demo.
+    // Pero por solicitud, solo se necesita el diseño y el enlace de ayuda.
+    
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+      
+      // Simulación de validación amigable: cualquier campo no vacío da acceso a un dashboard demo.
+      if (username !== "" && password !== "") {
+        // Éxito: se puede redirigir a un panel (opcional). Creamos un efecto elegante.
+        // Mantenemos la elegancia: si quieres que simplemente muestre un mensaje de bienvenida.
+        // Vamos a redirigir a una página de "panel de ensayo" simulada (pero podemos mostrar un alert y quedarnos)
+        // Como es solo maqueta, redirigimos a un mensaje o mantenemos.
+        // Por funcionalidad y coherencia: se puede redirigir a un panel demo (creamos una alerta y limpiamos)
+        alert(`✨ Bienvenido/a ${username} al área de ensayos. Próximamente partituras y calendario.`);
+        // Limpiar error si estaba visible
+        errorDiv.classList.remove('show');
+        // Opcional: reset formulario
+        // form.reset();
+      } else {
+        // Mostrar mensaje de error elegante
+        errorDiv.classList.add('show');
+        setTimeout(() => {
+          errorDiv.classList.remove('show');
+        }, 3000);
+      }
+    });
+    
+    // Enlace de ayuda: desplazar a sección de contacto (simulación en la misma página o abrir modal)
+    const helpBtn = document.getElementById('problemasLink');
+    helpBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      // Mostrar un mensaje de ayuda contextual manteniendo la elegancia
+      alert("📧 Escríbenos a soporte@bandacristodetarazona.es o llama al 671 327 137\n\nNuestro equipo te ayudará a restablecer tu acceso.");
+    });
+    
+    // Pequeño detalle para quitar el mensaje de error al escribir
+    const inputs = [document.getElementById('username'), document.getElementById('password')];
+    inputs.forEach(input => {
+      input.addEventListener('focus', () => {
+        errorDiv.classList.remove('show');
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>
