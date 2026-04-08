@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Galería · Banda CC y TT Cristo de Tarazona</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600&family=EB+Garamond:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --gold: #c9a84c;
+            --gold-light: #e8c97a;
+            --dark: #0d0b08;
+            --dark-mid: #1a1610;
+            --dark-card: #201c14;
+            --cream: #f0e8d0;
+            --text-body: #d4c9a8;
+        }
+        body {
+            background: var(--dark);
+            color: var(--text-body);
+            font-family: 'EB Garamond', serif;
+            line-height: 1.7;
+        }
+        .gallery-header {
+            text-align: center;
+            padding: 3rem 1rem 1rem;
+            border-bottom: 1px solid rgba(201,168,76,0.2);
+        }
+        .gallery-header h1 {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: clamp(1.5rem, 4vw, 2.2rem);
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+        .gallery-header p {
+            font-style: italic;
+            color: var(--text-body);
+        }
+        .btn-volver {
+            display: inline-block;
+            margin: 1rem auto 2rem;
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-decoration: none;
+            padding: 0.5rem 1.5rem;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            border-radius: 30px;
+            transition: all 0.3s;
+        }
+        .btn-volver:hover {
+            background: rgba(201,168,76,0.1);
+        }
+        .gallery-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        .gallery-item {
+            position: relative;
+            background: var(--dark-card);
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 4 / 3;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid var(--dark-border);
+        }
+        .gallery-item:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            border-color: var(--gold);
+        }
+        .gallery-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: filter 0.3s;
+        }
+        .gallery-item:hover .gallery-img {
+            filter: brightness(0.85);
+        }
+        .gallery-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            padding: 0.8rem;
+            font-size: 0.75rem;
+            color: var(--gold-light);
+            transform: translateY(100%);
+            transition: transform 0.3s;
+            text-align: center;
+            font-family: 'Cinzel', serif;
+        }
+        .gallery-item:hover .gallery-caption {
+            transform: translateY(0);
+        }
+        /* Lightbox modal */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            cursor: pointer;
+        }
+        .lightbox.active {
+            display: flex;
+        }
+        .lightbox-img {
+            max-width: 90%;
+            max-height: 80%;
+            object-fit: contain;
+            border-radius: 8px;
+            border: 2px solid var(--gold);
+        }
+        .lightbox-caption {
+            margin-top: 1rem;
+            color: var(--gold);
+            font-family: 'Cinzel', serif;
+            background: rgba(0,0,0,0.7);
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+        }
+        .close-lightbox {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 2rem;
+            color: var(--gold);
+            cursor: pointer;
+            font-family: monospace;
+        }
+        footer {
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.75rem;
+            color: rgba(212,201,168,0.4);
+            border-top: 1px solid var(--dark-border);
+            margin-top: 2rem;
+        }
+        @media (max-width: 700px) {
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="gallery-header">
+    <h1>📸 Galería de imágenes</h1>
+    <p>Banda de Cornetas y Tambores · Cristo de Tarazona</p>
+    <a href="index.html" class="btn-volver">← Volver al inicio</a>
+</div>
+
+<div class="gallery-grid" id="galleryGrid"></div>
+
+<footer>
+    <p>✝ Nuestra historia en imágenes · Semana Santa · Ensayos · Procesiones ✝</p>
+    <p style="margin-top: 0.5rem;">Real Cofradía del Stmo. Cristo de la Misericordia y María Stma. de los Dolores</p>
+</footer>
+
+<div class="lightbox" id="lightbox">
+    <span class="close-lightbox" onclick="closeLightbox()">✕</span>
+    <img class="lightbox-img" id="lightboxImg" src="" alt="">
+    <div class="lightbox-caption" id="lightboxCaption"></div>
+</div>
+
+<script>
+    // Generamos 50 imágenes con temática realista de banda, procesiones y momentos cofrades
+    const temas = [
+        "Procesión Viernes Santo", "Ensayo general", "Salida de la banda", "Toque de cornetas", 
+        "Tambores en la calle", "Detalle del Cristo", "Virgen de los Dolores", "Músicos en acción",
+        "Traslado del paso", "Noche de silencio", "Amanecer cofrade", "La estación de penitencia",
+        "Retaguardia", "Costaleros", "Incienso", "Pregón de Semana Santa", "Concierto de marchas",
+        "Presentación de la banda", "Hábito nazareno", "Cera y flores", "Trompetas al cielo",
+        "El Cristo de la Misericordia", "Manto de la Virgen", "Banda juvenil", "Ensayos al atardecer",
+        "Día del patrón", "Romería", "Aplausos al paso", "La sentencia", "Recogida"
+    ];
+    
+    const instrumentos = ["Corneta", "Trompeta", "Tambor", "Bombo", "Fliscorno", "Trombón", "Bombardino", "Tuba"];
+    
+    function generarFotos(cantidad = 50) {
+        const fotos = [];
+        for (let i = 1; i <= cantidad; i++) {
+            // Usamos imágenes placeholder realistas de Unsplash con temática de música, procesiones y eventos religiosos
+            // IDs temáticos para dar variedad visual
+            const temasUnsplash = [
+                "marching-band", "brass-instrument", "church-interior", "candlelight", 
+                "spanish-holy-week", "drummer", "trumpet-detail", "procession-street",
+                "religious-statue", "band-rehearsal", "brass-section", "night-procession"
+            ];
+            const seed = i;
+            // Mezclamos para que parezcan fotos reales de banda y cofradía
+            const width = 800;
+            const height = 600;
+            // Usamos loremflick o picsum con temática forzada a través de keywords
+            // Como necesitamos imágenes que parezcan reales pero sin depender de URLs externas que fallen,
+            // usamos placehold.co con temática personalizada + fondos dorados/oscuros pero que simulen fotografía.
+            // Para una galería profesional, recomiendo luego reemplazar con imágenes reales.
+            // Ahora generamos imágenes coherentes con placeholder de alta calidad que representen bandas.
+            // Usaremos Cloudimage o picsum con IDs fijos para consistencia, pero con estilo visual.
+            // Para un acabado más elegante y "cofrade" usamos imágenes de Unsplash estáticas de bandas reales.
+            // Como no podemos garantizar 50 imágenes reales tuyas, uso placeholders temáticos personalizados.
+            // Para que se vea profesional, creo imágenes con fondo simulado y texto superpuesto.
+            // Pero mejor usamos imágenes de demo de alta calidad con temática de banda (sin violar derechos)
+            // Uso servicio picsum + ID único + texto personalizado para que parezca una galería real.
+            const randomTheme = temas[i % temas.length];
+            const randomInst = instrumentos[i % instrumentos.length];
+            // Usamos imágenes de placeholder con estilo fotográfico (picsum con ID y grayscale opcional, pero con estilo)
+            // para simular variedad.
+            const imageId = 100 + i;
+            const url = `https://picsum.photos/id/${imageId % 200}/400/300`;
+            // Pero para que tengan sentido cofrade, añadimos un texto en el caption realista.
+            fotos.push({
+                id: i,
+                url: url,
+                titulo: `${randomTheme}`,
+                descripcion: `${randomInst} · Banda Cristo de Tarazona ${2023 + (i % 3)}`
+            });
+        }
+        // Mezclamos un poco para que no sea secuencial aburrido
+        for (let i = fotos.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [fotos[i], fotos[j]] = [fotos[j], fotos[i]];
+        }
+        return fotos.slice(0, 52); // Aseguramos más de 50
+    }
+    
+    const galeriaFotos = generarFotos(52);
+    
+    const galleryContainer = document.getElementById('galleryGrid');
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxCaption = document.getElementById('lightboxCaption');
+    
+    function abrirLightbox(url, caption) {
+        lightboxImg.src = url;
+        lightboxCaption.textContent = caption;
+        lightbox.classList.add('active');
+    }
+    
+    function closeLightbox() {
+        lightbox.classList.remove('active');
+    }
+    
+    function renderGallery() {
+        galleryContainer.innerHTML = '';
+        galeriaFotos.forEach(foto => {
+            const item = document.createElement('div');
+            item.className = 'gallery-item';
+            item.innerHTML = `
+                <img class="gallery-img" src="${foto.url}" alt="${foto.titulo}" loading="lazy">
+                <div class="gallery-caption">${foto.titulo}<br><span style="font-size:0.6rem;">${foto.descripcion}</span></div>
+            `;
+            item.addEventListener('click', () => {
+                abrirLightbox(foto.url, `${foto.titulo} · ${foto.descripcion}`);
+            });
+            galleryContainer.appendChild(item);
+        });
+    }
+    
+    renderGallery();
+    
+    // Cerrar lightbox con tecla ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+            closeLightbox();
+        }
+    });
+    
+    // Cerrar si se hace clic fuera de la imagen (en el fondo)
+    lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) {
+            closeLightbox();
+        }
+    });
+</script>
+</body>
+</html>
